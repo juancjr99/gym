@@ -5,6 +5,9 @@ import 'package:gym/presentation/pages/history_page.dart';
 import 'package:gym/presentation/pages/home_page.dart' show HomePage;
 import 'package:gym/presentation/pages/progress_page.dart';
 import 'package:gym/presentation/pages/routines_page.dart';
+import 'package:gym/presentation/pages/create_routine_basic_page.dart';
+import 'package:gym/presentation/pages/create_routine_type_selection_page.dart';
+import 'package:gym/presentation/pages/create_routine_exercises_page.dart';
 import 'package:gym/presentation/pages/settings_page.dart';
 import 'package:gym/presentation/pages/workout_page.dart';
 
@@ -22,6 +25,26 @@ class AppRouter {
         path: AppConstants.routinesRoute,
         name: 'routines',
         builder: (context, state) => const RoutinesPage(),
+      ),
+      GoRoute(
+        path: AppConstants.createRoutineRoute,
+        name: 'create-routine',
+        builder: (context, state) => const CreateRoutineBasicPage(),
+      ),
+      GoRoute(
+        path: AppConstants.createRoutineBasicRoute,
+        name: 'create-routine-basic',
+        builder: (context, state) => const CreateRoutineBasicPage(),
+      ),
+      GoRoute(
+        path: AppConstants.createRoutineTypeSelectionRoute,
+        name: 'create-routine-type-selection',
+        builder: (context, state) => const CreateRoutineTypeSelectionPage(),
+      ),
+      GoRoute(
+        path: AppConstants.createRoutineExercisesRoute,
+        name: 'create-routine-exercises',
+        builder: (context, state) => const CreateRoutineExercisesPage(),
       ),
       GoRoute(
         path: AppConstants.workoutRoute,

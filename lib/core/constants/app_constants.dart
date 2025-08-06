@@ -2,6 +2,10 @@ class AppConstants {
   // Rutas
   static const String homeRoute = '/';
   static const String routinesRoute = '/routines';
+  static const String createRoutineRoute = '/create-routine';
+  static const String createRoutineBasicRoute = '/create-routine/basic';
+  static const String createRoutineTypeSelectionRoute = '/create-routine/type-selection';
+  static const String createRoutineExercisesRoute = '/create-routine/exercises';
   static const String workoutRoute = '/workout';
   static const String historyRoute = '/history';
   static const String progressRoute = '/progress';

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-enum RoutineType { traditional, circuit }
+enum RoutineType { traditional, circuit, mixed }
 
 class RoutineExercise extends Equatable {
   const RoutineExercise({
@@ -12,6 +12,8 @@ class RoutineExercise extends Equatable {
     this.targetTime,
     this.restTime,
     this.notes,
+    this.isCircuit = false,
+    this.sectionTitle,
   });
 
   final String exerciseId;
@@ -22,6 +24,8 @@ class RoutineExercise extends Equatable {
   final int? targetTime; // en segundos
   final int? restTime; // en segundos
   final String? notes;
+  final bool isCircuit; // true si este ejercicio es parte de un circuito
+  final String? sectionTitle; // título de la sección (ej: "Circuito 1", "Fuerza")
 
   @override
   List<Object?> get props => [
@@ -33,6 +37,8 @@ class RoutineExercise extends Equatable {
         targetTime,
         restTime,
         notes,
+        isCircuit,
+        sectionTitle,
       ];
 
   RoutineExercise copyWith({
@@ -44,6 +50,8 @@ class RoutineExercise extends Equatable {
     int? targetTime,
     int? restTime,
     String? notes,
+    bool? isCircuit,
+    String? sectionTitle,
   }) {
     return RoutineExercise(
       exerciseId: exerciseId ?? this.exerciseId,
@@ -54,6 +62,8 @@ class RoutineExercise extends Equatable {
       targetTime: targetTime ?? this.targetTime,
       restTime: restTime ?? this.restTime,
       notes: notes ?? this.notes,
+      isCircuit: isCircuit ?? this.isCircuit,
+      sectionTitle: sectionTitle ?? this.sectionTitle,
     );
   }
 

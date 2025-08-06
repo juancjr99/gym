@@ -5,7 +5,6 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../bloc/routines/routines_bloc.dart';
 import '../bloc/routines/routines_event.dart';
 import '../bloc/routines/routines_state.dart';
-import '../../data/repositories/mock_routine_repository.dart';
 import 'create_routine_page.dart';
 import 'routine_detail_page.dart';
 
@@ -14,169 +13,164 @@ class RoutinesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => RoutinesBloc(
-        routineRepository: MockRoutineRepository(),
-      )..add(const LoadRoutines()),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Rutinas'),
-        ),
-        body: BlocBuilder<RoutinesBloc, RoutinesState>(
-          builder: (context, state) {
-            if (state is RoutinesLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Rutinas'),
+      ),
+      body: BlocBuilder<RoutinesBloc, RoutinesState>(
+        builder: (context, state) {
+          if (state is RoutinesLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          
+          if (state is RoutinesError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Error al cargar rutinas',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    state.message,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  FilledButton(
+                    onPressed: () {
+                      context.read<RoutinesBloc>().add(const LoadRoutines());
+                    },
+                    child: const Text('Reintentar'),
+                  ),
+                ],
+              ),
+            );
+          }
+          
+          if (state is RoutinesLoaded) {
+            if (state.routines.isEmpty) {
+              return const _EmptyRoutinesView();
             }
             
-            if (state is RoutinesError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      size: 64,
-                      color: Theme.of(context).colorScheme.error,
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: state.routines.length,
+              itemBuilder: (context, index) {
+                final routine = state.routines[index];
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  child: ListTile(
+                    leading: Icon(
+                      routine.type == RoutineType.circuit
+                          ? Icons.loop
+                          : Icons.fitness_center,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Error al cargar rutinas',
-                      style: Theme.of(context).textTheme.headlineSmall,
+                    title: Text(
+                      routine.name,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      state.message,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                      textAlign: TextAlign.center,
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (routine.description != null)
+                          Text(routine.description!),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${routine.exercises.length} ejercicios • ${routine.type == RoutineType.circuit ? 'Circuito' : 'Tradicional'}',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    FilledButton(
-                      onPressed: () {
-                        context.read<RoutinesBloc>().add(const LoadRoutines());
-                      },
-                      child: const Text('Reintentar'),
-                    ),
-                  ],
-                ),
-              );
-            }
-            
-            if (state is RoutinesLoaded) {
-              if (state.routines.isEmpty) {
-                return const _EmptyRoutinesView();
-              }
-              
-              return ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: state.routines.length,
-                itemBuilder: (context, index) {
-                  final routine = state.routines[index];
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    child: ListTile(
-                      leading: Icon(
-                        routine.type == RoutineType.circuit
-                            ? Icons.loop
-                            : Icons.fitness_center,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      title: Text(
-                        routine.name,
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (routine.description != null)
-                            Text(routine.description!),
-                          const SizedBox(height: 4),
-                          Text(
-                            '${routine.exercises.length} ejercicios • ${routine.type == RoutineType.circuit ? 'Circuito' : 'Tradicional'}',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              fontSize: 12,
-                            ),
+                    trailing: PopupMenuButton(
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(
+                          value: 'edit',
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit),
+                              SizedBox(width: 8),
+                              Text('Editar'),
+                            ],
                           ),
-                        ],
-                      ),
-                      trailing: PopupMenuButton(
-                        itemBuilder: (context) => [
-                          const PopupMenuItem(
-                            value: 'edit',
-                            child: Row(
-                              children: [
-                                Icon(Icons.edit),
-                                SizedBox(width: 8),
-                                Text('Editar'),
-                              ],
-                            ),
+                        ),
+                        const PopupMenuItem(
+                          value: 'duplicate',
+                          child: Row(
+                            children: [
+                              Icon(Icons.copy),
+                              SizedBox(width: 8),
+                              Text('Duplicar'),
+                            ],
                           ),
-                          const PopupMenuItem(
-                            value: 'duplicate',
-                            child: Row(
-                              children: [
-                                Icon(Icons.copy),
-                                SizedBox(width: 8),
-                                Text('Duplicar'),
-                              ],
-                            ),
+                        ),
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              Icon(Icons.delete, color: Colors.red),
+                              SizedBox(width: 8),
+                              Text('Eliminar', style: TextStyle(color: Colors.red)),
+                            ],
                           ),
-                          const PopupMenuItem(
-                            value: 'delete',
-                            child: Row(
-                              children: [
-                                Icon(Icons.delete, color: Colors.red),
-                                SizedBox(width: 8),
-                                Text('Eliminar', style: TextStyle(color: Colors.red)),
-                              ],
-                            ),
-                          ),
-                        ],
-                        onSelected: (value) {
-                          switch (value) {
-                            case 'edit':
-                              // TODO: Implementar navegación a editar rutina
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Funcionalidad en desarrollo'),
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
-                              break;
-                            case 'duplicate':
-                              _duplicateRoutine(context, routine);
-                              break;
-                            case 'delete':
-                              _showDeleteConfirmation(context, routine);
-                              break;
-                          }
-                        },
-                      ),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => RoutineDetailPage(routine: routine),
-                          ),
-                        );
+                        ),
+                      ],
+                      onSelected: (value) {
+                        switch (value) {
+                          case 'edit':
+                            // TODO: Implementar navegación a editar rutina
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Funcionalidad en desarrollo'),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                            break;
+                          case 'duplicate':
+                            _duplicateRoutine(context, routine);
+                            break;
+                          case 'delete':
+                            _showDeleteConfirmation(context, routine);
+                            break;
+                        }
                       },
                     ),
-                  );
-                },
-              );
-            }
-            
-            return const _EmptyRoutinesView();
-          },
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => _navigateToCreateRoutine(context),
-          icon: PhosphorIcon(PhosphorIcons.plus()),
-          label: const Text('Crear Rutina'),
-        ),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => RoutineDetailPage(routine: routine),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            );
+          }
+          
+          return const _EmptyRoutinesView();
+        },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _navigateToCreateRoutine(context),
+        icon: PhosphorIcon(PhosphorIcons.plus()),
+        label: const Text('Crear Rutina'),
       ),
     );
   }
@@ -184,10 +178,7 @@ class RoutinesPage extends StatelessWidget {
   void _navigateToCreateRoutine(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => BlocProvider.value(
-          value: context.read<RoutinesBloc>(),
-          child: const CreateRoutinePage(),
-        ),
+        builder: (context) => const CreateRoutinePage(),
       ),
     ).then((_) {
       // Recargar rutinas cuando se regrese de crear rutina

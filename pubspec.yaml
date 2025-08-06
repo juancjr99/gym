@@ -40,6 +40,7 @@ dependencies:
   # Gestión de Estado
   flutter_bloc: ^8.1.6
   equatable: ^2.0.5
+  provider: ^6.1.2
   
   # Navegación
   go_router: ^14.2.7

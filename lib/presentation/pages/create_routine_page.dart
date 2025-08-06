@@ -2,31 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/entities.dart';
 import '../bloc/bloc.dart';
-import '../../data/repositories/mock_routine_repository.dart';
 
 class CreateRoutinePage extends StatelessWidget {
   const CreateRoutinePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => RoutinesBloc(
-        routineRepository: MockRoutineRepository(),
-      ),
-      child: BlocListener<RoutinesBloc, RoutinesState>(
-        listener: (context, state) {
-          if (state is RoutineCreated) {
-            Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Rutina creada exitosamente'),
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-          }
-        },
-        child: const _CreateRoutineForm(),
-      ),
+    return BlocListener<RoutinesBloc, RoutinesState>(
+      listener: (context, state) {
+        if (state is RoutineCreated) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Rutina creada exitosamente'),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      },
+      child: const _CreateRoutineForm(),
     );
   }
 }

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'core/theme/app_theme.dart';
 import 'app/routes/app_router.dart';
 import 'presentation/bloc/theme/theme_bloc.dart';
 import 'presentation/bloc/theme/theme_state.dart';
+import 'presentation/bloc/routines/routines_bloc.dart';
+import 'presentation/bloc/routines/routines_event.dart';
+import 'presentation/providers/create_routine_provider.dart';
+import 'data/repositories/mock_routine_repository.dart';
 
 void main() {
   runApp(const GymApp());
@@ -15,8 +20,14 @@ class GymApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ThemeBloc(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => CreateRoutineProvider()),
+        BlocProvider(create: (context) => ThemeBloc()),
+        BlocProvider(create: (context) => RoutinesBloc(
+          routineRepository: MockRoutineRepository(),
+        )..add(const LoadRoutines())),
+      ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
           ThemeMode themeMode = ThemeMode.system;

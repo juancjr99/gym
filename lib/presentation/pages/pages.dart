@@ -2,6 +2,9 @@
 export 'home_page.dart';
 export 'routines_page.dart';
 export 'create_routine_page.dart';
+export 'create_routine_basic_page.dart';
+export 'create_routine_type_selection_page.dart';
+export 'create_routine_exercises_page.dart';
 export 'edit_routine_page.dart';
 export 'routine_detail_page.dart';
 export 'workout_page.dart';

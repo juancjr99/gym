@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
+import '../../core/constants/app_constants.dart';
 
 class HomeDashboard extends StatelessWidget {
   const HomeDashboard({super.key});
@@ -119,7 +121,7 @@ class HomeDashboard extends StatelessWidget {
                   icon: PhosphorIcons.plus(),
                   title: 'Nueva Rutina',
                   onTap: () {
-                    // TODO: Crear rutina
+                    context.go(AppConstants.createRoutineBasicRoute);
                   },
                 ),
               ),
